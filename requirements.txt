@@ -1,0 +1,4 @@
+pyquery==1.2.2
+Twisted==12.2.0
+wokkel
+pinder==1.0.1

@@ -1,0 +1,88 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          $PLUGIN
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts a service for the Twisted plugin '$PLUGIN'
+# Description:       Generic plugin starter for twistd plugins
+### END INIT INFO
+# Author: Garret Heaton (powdahound@gmail.com)
+
+PLUGIN=campfire_chatbot
+PLUGIN_DIR=*REPLACEME*
+PLUGIN_FILE=$PLUGIN_DIR/$PLUGIN.tac
+DAEMON=/usr/bin/twistd
+PIDFILE=/var/run/$PLUGIN.pid
+LOGFILE=/var/log/$PLUGIN.log
+DAEMON_OPTS="--pidfile=$PIDFILE --logfile=$LOGFILE -y $PLUGIN_FILE"
+export PYTHONPATH=$PYTHONPATH:$PLUGIN_DIR
+
+. /etc/rc.d/init.d/functions
+
+if [ ! -x $DAEMON ]; then
+  echo "ERROR: Can't execute $DAEMON."
+  exit 1
+fi
+
+start_service() {
+  echo -n " * Starting $PLUGIN... "
+  daemon $DAEMON $DAEMON_OPTS
+  e=$?
+  if [ $e -eq 1 ]; then
+    echo "Already Running"
+    return
+  fi
+
+  if [ $e -eq 255 ]; then
+    echo "Couldn't Start :("
+    return
+  fi
+
+  echo "Done"
+}
+
+stop_service() {
+  echo -n " * Stopping $PLUGIN... "
+  killproc -p $PIDFILE -d 10 twistd
+  e=$?
+  if [ $e -eq 1 ]; then
+    echo "Not Running"
+    return
+  fi
+
+  echo "Done"
+}
+
+case "$1" in
+  start)
+    start_service
+    ;;
+  stop)
+    stop_service
+    ;;
+  status)
+    if [ -f $PIDFILE ]; then
+        PID=`cat $PIDFILE`
+        if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
+            printf "%s\n" "Process dead but pidfile exists"
+        else
+            echo "Running"
+        fi
+    else
+        printf "%s\n" "Service not running"
+    fi
+    ;;
+  restart)
+    stop_service
+    start_service
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$PLUGIN {start|stop|status|restart}" >&2
+    exit 1   
+    ;;
+esac
+
+exit 0
