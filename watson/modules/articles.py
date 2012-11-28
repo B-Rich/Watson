@@ -1,5 +1,4 @@
-import httplib2
-from pyquery import PyQuery
+import urllib2, re
 
 from watson.modules.chatmodule import ChatModule, command_function
 
@@ -14,13 +13,16 @@ class ArticleModule(ChatModule):
         '''
         Displays the title, summary, and link to a random Wikipedia article.
         '''
-        http = httplib2.Http()
-        resp, content = http.request('http://en.wikipedia.org/wiki/Special:Random')
-        if resp.status != 200:
-            self.speak(user,"Looks like Wikipedia is down. You should have donated.")
-            return
-        page = PyQuery(content)
-        title = page('h1#firstHeading').text().encode('utf-8')
-        summary = page('div#mw-content-text > p:first').text().encode('utf-8')
-        article_url = resp['content-location']
+        req = urllib2.Request('http://en.wikipedia.org/wiki/Special:Random', headers={'User-Agent' : "Magic Browser"}) 
+        response = urllib2.urlopen(req)
+        page = response.read()
+        
+        title = re.search('<h1 id="firstHeading" class="firstHeading"><span dir="auto"*>(.*?)</span></h1>',page).groups()[0]
+        
+        summary = re.search('<p*>(.*?)</p>',page).groups()[0]
+        killtags = re.compile(r'<[^<]*?>')
+        summary = killtags.sub('', summary)
+        
+        article_url = response.url
+    
         self.speak(user,"\n".join([x.decode('UTF-8') for x in [title,summary,article_url] if x]))

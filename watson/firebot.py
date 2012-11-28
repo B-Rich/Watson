@@ -1,5 +1,6 @@
 from pinder.campfire import Campfire
 from twisted.application import service
+from twisted.python.failure import DefaultException
 
 from watson.chatbot import Chatbot
 
@@ -36,8 +37,8 @@ class Firebot(Chatbot):
                 
             self.perform_action(user, text)
         
-        def err_callback(*args):
-            self.error()
+        def err_callback(exc):
+            self.error(exc)
             
         self.room.join()
         self.room.listen(callback, err_callback, start_reactor = False)
@@ -45,10 +46,11 @@ class Firebot(Chatbot):
         application = service.Application("firebot")
         return application
 
-    def error(self):
-        # self.room.speak("HAD AN ERROR")
-        # self.room.speak(self.goodbye_phrase)
-        self.room.leave()
+    def error(self,exc):
+        if type(exc) == DefaultException:
+            self.connect()
+        else:
+            self.room.leave()
     
     def disconnect(self):
         # self.room.speak(self.goodbye_phrase)
