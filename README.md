@@ -103,7 +103,7 @@ All commands are tokenized by whitespace, so no token can have any whitespace in
 
 * __Variables With Prefixes and/or Postfixes__: Variables don't have to be whole words. The following is completely valid: `command_function("deploy branch=<branch>")` Note, though, that any given token cannot have multiple variable tags. The following is INVALID: `command_function("deploy branch=<branch>&user=<user>")`
 
-* __Optional Parts__: In the Watson command syntax, you can specify part of a command as optional. To do this, just surround it with square brackets. Like the following: `command_function("m[o]ustachify <actor>")` and `command_function("deploy <branch> [because <reason>]` In the first example, the "o" is optional, and the command will work with or without it. In the latter example, you can run it with or without adding a reason, but note that if no reason is supplied, you function will not be passed a "reason" variable, and you must provide a default value for it.
+* __Optional Parts__: In the Watson command syntax, you can specify part of a command as optional. To do this, just surround it with square brackets. Like the following: `command_function("m[o]ustachify <actor>")` and `command_function("deploy <branch> [because <reason>]` In the first example, the "o" is optional, and the command will work with or without it. In the latter example, you can run it with or without adding a reason, but note that if no reason is supplied, your function will not be passed a "reason" variable, and you must provide a default value for it.
 
 ## Advanced Techniques
 
