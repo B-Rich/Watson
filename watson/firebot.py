@@ -1,7 +1,7 @@
 from pinder.campfire import Campfire
+from pinder.exc import HTTPNotFoundException
 from twisted.application import service
-from twisted.python.failure import DefaultException
-import logging, datetime
+import logging, traceback, time, sys
 
 from watson.chatbot import Chatbot
 
@@ -48,8 +48,12 @@ class Firebot(Chatbot):
         return application
 
     def error(self, exc):
-        self.logger.error("Had error at {0}: {1}".format(datetime.datetime.now(), exc))
-        if type(exc) == DefaultException:
+        self.logger.error(traceback.format_exc())
+        exc_type, _, _ = sys.exc_info()
+        self.logger.error(exc_type)
+        if exc_type == HTTPNotFoundException:
+            self.logger.info("Was disconnected, trying again in 10 seconds.")
+            time.sleep(10)
             self.connect()
         else:
             self.room.leave()
