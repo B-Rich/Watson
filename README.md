@@ -7,9 +7,9 @@ The Chatbot that won America's hearts in the 80's is back! And this time, he mea
 
 ## What Is Watson?
 
-Watson is a python package that allows you to write and host your very own chatbot that will listen to your chat conversations and perform tasks based on certain commands. Watson is based on the work over at Hubot, but done in Python. It's easy to install and add your own modules; you should be able to get set up in a matter of minutes!
+Watson is a python package that allows you to write and host your very own chatbot that will listen to your chat conversations and perform tasks based on certain commands. Watson is based on [Hubot](http://hubot.github.com/) from GitHub, but done in Python. It's easy to install and add your own modules; you should be able to get set up in a matter of minutes!
 
-Currently, Watson will chat over two networks: Google Talk (and other Jabber networks, but really who uses those?), and Campfire. Need Watson to work on another chat network? Let us know, or feel free to write a patch!
+Currently, Watson will chat over two networks: Google Talk (and other Jabber networks, but really who uses those?), and Campfire. We are working on an implementation for HipChat as well. Need Watson to work on another chat network? Let us know, or feel free to write your own and submit a pull request!
 
 Watson takes simple commands, based on which chat modules you have installed on your particular bot. By default, Watson commands must be prefaced with the word "watson" as in the following examples:
 
