@@ -15,19 +15,29 @@ class Variable(object):
     def __init__(self, name):
         i = name.find("<")
         j = name.find(">")
-        self.name = name[i+1:j]
-        if not self.name:
+        inner = name[i+1:j]
+        if not inner:
             raise Exception
+        parts = inner.split("=")
+        if len(parts) == 1:
+            self.name = parts[0]
+            self.options = []
+        else:
+            # they put in some options we should save
+            self.name = parts[0]
+            self.options = parts[1].split("/")
+            
         self.prefix = name[:i]
         self.postfix = name[j+1:]
         self.value = None
     
     def match(self, word):
         if word.startswith(self.prefix) and word.endswith(self.postfix):
-            self.value = word[len(self.prefix):len(word)-len(self.postfix)]
-            return True
-        else:
-            return False
+            value = word[len(self.prefix):len(word)-len(self.postfix)]
+            if not self.options or value in self.options:
+                self.value = value
+                return True
+        return False
 
     def __repr__(self):
         return self.prefix + "<" + self.name + ">" + self.postfix
