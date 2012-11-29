@@ -1,6 +1,7 @@
 from pinder.campfire import Campfire
 from twisted.application import service
 from twisted.python.failure import DefaultException
+import logging, datetime
 
 from watson.chatbot import Chatbot
 
@@ -47,12 +48,14 @@ class Firebot(Chatbot):
         return application
 
     def error(self,exc):
+        logging.error("Had error at {0}: {1}".format(datetime.datetime.now(),exc))
         if type(exc) == DefaultException:
             self.connect()
         else:
             self.room.leave()
     
     def disconnect(self):
+        logging.error("Got disconnect called")
         # self.room.speak(self.goodbye_phrase)
         self.room.leave()
     
