@@ -4,22 +4,28 @@ import unicodedata
 from watson.stateful import State
 from watson.grammar import create_grammars, match_grammars
 
-logging.basicConfig(filename='/var/log/chatbot.log', level=logging.DEBUG)
-
-
 class Chatbot(object):
 
     default_phrase = 'I... have no idea what you\'re talking about. Try the command "help" for a list of my functions'
     welcome_phrase = "Hello, %s here, how may I assist you?"
     goodbye_phrase = "Oh what a world, what a world..."
 
-    def __init__(self, name="Watson", command_names=()):
+    def __init__(self, name="Watson", command_names=(), log_file='/var/log/chatbot.log', log_level=logging.INFO):
         self._modules = {}
         self._commands = {}
         self.state = State(self)
         self.welcome_phrase = self.welcome_phrase % name
         self.command_grammars = create_grammars("/".join(command_names) + " <phrase>")
-
+        
+        formatter = logging.Formatter('[%(asctime)s %(levelname)s] - %(message)s')
+        
+        handler = logging.FileHandler(log_file)
+        handler.setFormatter(formatter)
+        
+        self.logger = logging.getLogger("watson")
+        self.logger.addHandler(handler)
+        self.logger.setLevel(log_level)
+    
     def speak(self, message, user):
         raise NotImplementedError
 
@@ -71,8 +77,8 @@ class Chatbot(object):
                     self.speak(user, self.default_phrase)
 
         except Exception:
-            logging.error(traceback.format_exc())
+            self.logger.error(traceback.format_exc())
             try:
                 self.speak(user, "Whoops, looks like that caused me to crash. Check my log files to see what happened!")
             except:
-                logging.error(traceback.format_exc())
+                self.logger.error(traceback.format_exc())

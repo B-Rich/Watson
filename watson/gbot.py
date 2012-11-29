@@ -4,18 +4,17 @@ from twisted.application import service
 from twisted.words.protocols.jabber import jid
 from wokkel.client import XMPPClient
 from watson.chatbot import Chatbot
-import logging
 
 
 class GBotProtocol(MessageProtocol):
     def connectionMade(self):
-        logging.info("Connected!")
+        self.bot.logger.info("Connected!")
 
         # send initial presence
         self.send(AvailablePresence())
 
     def connectionLost(self, reason):
-        logging.info("Disconnected!")
+        self.bot.logger.info("Disconnected!")
 
     def onMessage(self, msg):
 

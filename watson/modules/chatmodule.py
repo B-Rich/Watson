@@ -1,5 +1,3 @@
-import logging
-
 from watson.grammar import create_grammars, match_grammars
 
 
@@ -37,7 +35,7 @@ class ChatModule(object):
         for fun in self.command_functions:
             kwargs = match_grammars(command, fun.command_grammars)
             if kwargs is not False:
-                logging.info("Grammar Parsed:\n\tcommand: {0}\n\tmodule: {1}\n\targs: {2}".format(command, self.__module_name__ + " - " + fun.__name__, kwargs))
+                self.bot.logger.info("Grammar Parsed:\n\t\t\t\tcommand: {0}\n\t\t\t\tmodule: {1}\n\t\t\t\targs: {2}".format(command, self.__module_name__ + " - " + fun.__name__, kwargs))
                 fun(self, user, **kwargs)
                 hit = True
         return hit
