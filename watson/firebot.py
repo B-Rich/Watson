@@ -36,11 +36,12 @@ class Firebot(Chatbot):
             user_id = message['user_id']
             user = self.users.get(user_id)
 
-            if not user:
-                user = self.campfire.user(user_id)['user']['name']
-                self.users[user_id] = user
-
-            self.perform_action(user, text)
+            if user_id:
+                if not user:
+                    user = self.campfire.user(user_id)['user']['name']
+                    self.users[user_id] = user
+    
+                self.perform_action(user, text)
 
         def err_callback(exc):
             self.error(exc)
