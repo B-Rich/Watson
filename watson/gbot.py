@@ -4,6 +4,7 @@ from twisted.application import service
 from twisted.words.protocols.jabber import jid
 from wokkel.client import XMPPClient
 from watson.chatbot import Chatbot
+import logging
 
 
 class GBotProtocol(MessageProtocol):
@@ -27,8 +28,8 @@ class GBotProtocol(MessageProtocol):
 
 class Gbot(Chatbot):
 
-    def __init__(self, name, commands, username, password):
-        super(Gbot, self).__init__(name, commands)
+    def __init__(self, name, commands, username, password, log_file='/var/log/chatbot.log', log_level=logging.INFO):
+        super(Gbot, self).__init__(name, commands, log_file, log_level)
         self.username = username
         self.password = password
 
