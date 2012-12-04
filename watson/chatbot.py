@@ -70,11 +70,16 @@ class Chatbot(object):
             if parsed:
                 phrase = parsed['phrase'].lower()
                 for module in self._modules.values():
-                    hit |= module.perform_action(user, phrase)
+                    hit |= module.perform_command(user, phrase)
                     if hit:
                         break
                 if not hit:
                     self.speak(user, self.default_phrase)
+            else:
+                for module in self._modules.values():
+                    hit |= module.overhear(user, message)
+                    if hit:
+                        break
 
         except Exception:
             self.logger.error(traceback.format_exc())

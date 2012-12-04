@@ -1,6 +1,6 @@
 import urllib, urllib2, json, random
 
-from watson.modules.chatmodule import ChatModule, command_function
+from watson.modules.chatmodule import ChatModule, command_function, overhear_function
 
 
 class ImageModule(ChatModule):
@@ -48,3 +48,26 @@ class ImageModule(ChatModule):
         response = urllib2.urlopen("http://pugme.herokuapp.com/random")
         pugs = json.load(response)
         self.speak(user, pugs["pug"])
+
+    alot_images = [
+              "http://4.bp.blogspot.com/_D_Z-D2tzi14/S8TRIo4br3I/AAAAAAAACv4/Zh7_GcMlRKo/s400/ALOT.png",
+              "http://3.bp.blogspot.com/_D_Z-D2tzi14/S8TTPQCPA6I/AAAAAAAACwA/ZHZH-Bi8OmI/s1600/ALOT2.png",
+              "http://2.bp.blogspot.com/_D_Z-D2tzi14/S8TiTtIFjpI/AAAAAAAACxQ/HXLdiZZ0goU/s320/ALOT14.png",
+              "http://1.bp.blogspot.com/_D_Z-D2tzi14/S8TZcKXqR-I/AAAAAAAACwg/F7AqxDrPjhg/s320/ALOT13.png",
+              "http://2.bp.blogspot.com/_D_Z-D2tzi14/S8Tdnn-NE0I/AAAAAAAACww/khYjZePN50Y/s400/ALOT4.png",
+              "http://3.bp.blogspot.com/_D_Z-D2tzi14/S8TffVGLElI/AAAAAAAACxA/trH1ch0Y3tI/s320/ALOT6.png",
+              ]
+        
+    @overhear_function("alot")
+    def alot(self, user):
+        self.speak(user,random.choice(self.alot_images))
+
+    ackbar_images = [
+                  "http://i1.wp.com/laughingsquid.com/wp-content/uploads/its-a-trap-20100127-143341.jpg",
+                  "http://www.ackbar.org/images/ackbarSitting.jpg",
+                  "http://profile.ak.fbcdn.net/hprofile-ak-snc6/276396_527984296_668286021_n.jpg",
+                  ]
+        
+    @overhear_function("it's a trap")
+    def ackbar(self, user):
+        self.speak(user,random.choice(self.ackbar_images))
