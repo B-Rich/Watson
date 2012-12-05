@@ -62,7 +62,7 @@ class Chatbot(object):
 
     def perform_action(self, user, message):
         try:
-            message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore')
+            message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
             self.state.check_answer(user, message)
 
             hit = False
