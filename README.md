@@ -21,9 +21,9 @@ Watson takes simple commands, based on which chat modules you have installed on 
 
 Watson can be installed using pip, with the following command:
 
-`TODO: Get Watson pip command once we're all official`
+	pip install watson
 
-After that, it's a matter of simply importing watson. 
+After that, you should have everything you need to create and run your very own chat bot. 
 
 ## Setting Up Your Watson
 
@@ -90,20 +90,20 @@ In the above example, we have a very simple command of "ping" which can be activ
 
 All commands are tokenized by whitespace, so no token can have any whitespace in it.
 
-* __String Literals__: In the above example, "ping" is a string literal. The command must have that word in that exact spot. Simply write the word in the command, as in `command_function("show me the money")` Watson will only run that function once it gets the command, "watson show me the money"
+* __String Literals__: In the above example, "ping" is a string literal. The command must have that word in that exact spot. Simply write the word in the command, as in `@command_function("show me the money")` Watson will only run that function once it gets the command, "watson show me the money"
 
-* __String Literals With Multiple Values__: People always have different ways of phrasing things. When you write commands, you should be aware of this, and we've provided a way for your commands to give a little leeway. Simply add a forward slash between values a string literal can have. For example, `command_function("show me the money/monies/monkeys")` would work for any of the commands "watson show me the money" or "watson show me the monkeys" Note that the command "watson show me the money/monies/monkeys" will fail, and that you must send only one of the options
+* __String Literals With Multiple Values__: People always have different ways of phrasing things. When you write commands, you should be aware of this, and we've provided a way for your commands to give a little leeway. Simply add a forward slash between values a string literal can have. For example, `@command_function("show me the money/monies/monkeys")` would work for any of the commands "watson show me the money" or "watson show me the monkeys" Note that the command "watson show me the money/monies/monkeys" will fail, and that you must send only one of the options
 
 * __Variable__: Say you want to get a value from a command. We can do that! In the following command, "direction" is a variable that will get passed to the function:
-  `command_function("go <direction>")
+  `@command_function("go <direction>")
    def go(self, user, direction):`
    Note that the function must take an argument with the same name as each variable in the command. In this example, the command "watson go up" would pass the string "up" to the go() function.
    
-* __Variable With Required Values__: In the above example, the command would accept "watson go fish" and "watson go fubar" as valid directions, but sometimes you want to limit choices. Check out the following command syntax: `command_function("go <direction=north/west/east/south/up/down>"` In this case, only those six directions would be considered valid, and the command "go fish" would not trigger this function.
+* __Variable With Required Values__: In the above example, the command would accept "watson go fish" and "watson go fubar" as valid directions, but sometimes you want to limit choices. Check out the following command syntax: `@command_function("go <direction=north/west/east/south/up/down>"` In this case, only those six directions would be considered valid, and the command "go fish" would not trigger this function.
 
-* __Variables With Prefixes and/or Postfixes__: Variables don't have to be whole words. The following is completely valid: `command_function("deploy branch=<branch>")` Note, though, that any given token cannot have multiple variable tags. The following is INVALID: `command_function("deploy branch=<branch>&user=<user>")`
+* __Variables With Prefixes and/or Postfixes__: Variables don't have to be whole words. The following is completely valid: `@command_function("deploy branch=<branch>")` Note, though, that any given token cannot have multiple variable tags. The following is INVALID: `command_function("deploy branch=<branch>&user=<user>")`
 
-* __Optional Parts__: In the Watson command syntax, you can specify part of a command as optional. To do this, just surround it with square brackets. Like the following: `command_function("m[o]ustachify <actor>")` and `command_function("deploy <branch> [because <reason>]` In the first example, the "o" is optional, and the command will work with or without it. In the latter example, you can run it with or without adding a reason, but note that if no reason is supplied, your function will not be passed a "reason" variable, and you must provide a default value for it.
+* __Optional Parts__: In the Watson command syntax, you can specify part of a command as optional. To do this, just surround it with square brackets. Like the following: `@command_function("m[o]ustachify <actor>")` and `@command_function("deploy <branch> [because <reason>]` In the first example, the "o" is optional, and the command will work with or without it. In the latter example, you can run it with or without adding a reason, but note that if no reason is supplied, your function will not be passed a "reason" variable, and you must provide a default value for it.
 
 ## Advanced Techniques
 
@@ -129,6 +129,14 @@ We've included a module, MathModule that does not seem that interesting on its o
     		self.speak(user,"It is a secret to everyone")
 
 Note that the module has a dependency on the Math Challenge module, so the Math Challenge module must be added to the bot before the Secret Module is. Read the documentation on protect_with_math() for more information.
+
+### @overhear_function()
+
+You may notice that the command structure of Watson is fairly rigid, so you don't accidentally end up deploying things on your server when you're trying to talk about what you did over the weekend. But, sometimes, you want Watson to be a little more talkative.
+
+For this reason, we've included the `@overhear_function()` decorator that takes a regular expression and wraps any function inside a chat module.
+
+As soon as Watson overhears any non-command phrase that matches the regular expression, Watson will run the wrapped function. You can see an example of this in the ImagesModule. Note that because these functions are run much more easily than commands, they should not be used for anything important that Watson needs to hear. They should only be used for things it happens to overhear.
 
 ### Adventure Game
 
