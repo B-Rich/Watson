@@ -61,29 +61,30 @@ class Chatbot(object):
         return self._commands.get(name, None)
 
     def perform_action(self, user, message):
-        try:
-            message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
-            self.state.check_answer(user, message)
-
-            hit = False
-            parsed = match_grammars(str(message), self.command_grammars)
-            if parsed:
-                phrase = parsed['phrase'].lower()
-                for module in self._modules.values():
-                    hit |= module.perform_command(user, phrase)
-                    if hit:
-                        break
-                if not hit:
-                    self.speak(user, self.default_phrase)
-            else:
-                for module in self._modules.values():
-                    hit |= module.overhear(user, message)
-                    if hit:
-                        break
-
-        except Exception:
-            self.logger.error(traceback.format_exc())
+        if not self.username or user != self.username:
             try:
-                self.speak(user, "Whoops, looks like that caused me to crash. Check my log files to see what happened!")
-            except:
+                message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
+                self.state.check_answer(user, message)
+    
+                hit = False
+                parsed = match_grammars(str(message), self.command_grammars)
+                if parsed:
+                    phrase = parsed['phrase'].lower()
+                    for module in self._modules.values():
+                        hit |= module.perform_command(user, phrase)
+                        if hit:
+                            break
+                    if not hit:
+                        self.speak(user, self.default_phrase)
+                else:
+                    for module in self._modules.values():
+                        hit |= module.overhear(user, message)
+                        if hit:
+                            break
+    
+            except Exception:
                 self.logger.error(traceback.format_exc())
+                try:
+                    self.speak(user, "Whoops, looks like that caused me to crash. Check my log files to see what happened!")
+                except:
+                    self.logger.error(traceback.format_exc())

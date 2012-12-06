@@ -30,6 +30,7 @@ class Firebot(Chatbot):
         self.campfire = Campfire(self.subdomain, self.auth_token)
         self.room = self.campfire.find_room_by_name(self.room_name)
         self.room.join()
+        self.username = self.campfire.me()['name']
 
         def callback(message):
             text = message['body']
