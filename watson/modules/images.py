@@ -4,6 +4,9 @@ from watson.modules.chatmodule import ChatModule, command_function, overhear_fun
 
 
 class ImageModule(ChatModule):
+    '''
+    This chat module simply contains commands and overhear functions that return silly images. It should not be taken seriously.
+    '''
 
     __module_name__ = "images"
     __module_description__ = "Displays often-humorous images to chat"
@@ -49,6 +52,8 @@ class ImageModule(ChatModule):
         pugs = json.load(response)
         self.speak(user, pugs["pug"])
 
+
+
     alot_images = [
               "http://4.bp.blogspot.com/_D_Z-D2tzi14/S8TRIo4br3I/AAAAAAAACv4/Zh7_GcMlRKo/s400/ALOT.png",
               "http://3.bp.blogspot.com/_D_Z-D2tzi14/S8TTPQCPA6I/AAAAAAAACwA/ZHZH-Bi8OmI/s1600/ALOT2.png",
@@ -61,6 +66,8 @@ class ImageModule(ChatModule):
     @overhear_function("alot")
     def alot(self, user):
         self.speak(user,random.choice(self.alot_images))
+
+
 
     ackbar_images = [
                   "http://i1.wp.com/laughingsquid.com/wp-content/uploads/its-a-trap-20100127-143341.jpg",

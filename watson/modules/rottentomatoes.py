@@ -4,6 +4,9 @@ from watson.modules.chatmodule import ChatModule, command_function
 
 
 class RottenTomatoesModule(ChatModule):
+    '''
+    This chat module is intended to allow chat bots to provide succinct movie reviews via the use of a Rotten Tomatoes API Key that must be passed in upon construction
+    '''
 
     __module_name__ = "rotten tomatoes"
     __module_description__ = "Provides movie reviews from Rotten Tomatoes"
@@ -20,6 +23,9 @@ class RottenTomatoesModule(ChatModule):
 
     @command_function("how is/was <movie>[?]")
     def rotten_tomatoes(self, user, movie):
+        '''
+        Determines what Rotten Tomatoes thought of a movie.
+        '''
 
         params = urllib.urlencode({"apikey": self.api_key,
                                    "q": movie,

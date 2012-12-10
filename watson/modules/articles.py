@@ -4,6 +4,9 @@ from watson.modules.chatmodule import ChatModule, command_function
 
 
 class ArticleModule(ChatModule):
+    '''
+    This module provides access to articles from Wikipedia
+    '''
 
     __module_name__ = "articles"
     __module_description__ = "Module that provides interactions with Wikipedia."

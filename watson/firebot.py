@@ -1,5 +1,4 @@
 from pinder.campfire import Campfire
-from pinder.exc import HTTPNotFoundException
 from twisted.application import service
 import traceback, time, logging
 from twisted.internet import reactor

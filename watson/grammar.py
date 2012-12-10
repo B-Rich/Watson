@@ -1,11 +1,18 @@
 
 
 class Constant(object):
+    '''
+    A token object that represents a string literal. The literal may have a / in it to 
+    denote multiple values
+    '''
 
     def __init__(self, name):
         self.values = name.split("/")
 
     def match(self, word):
+        '''
+        Returns whether or not the word matches this constant's patterns
+        '''
         return word in self.values
 
     def __repr__(self):
@@ -13,6 +20,10 @@ class Constant(object):
 
 
 class Variable(object):
+    '''
+    A token object that represents a variable. All variables must contain < and >, and 
+    can have a prefix and/or suffix
+    '''
 
     def __init__(self, name):
         i = name.find("<")
@@ -34,6 +45,10 @@ class Variable(object):
         self.value = None
 
     def match(self, word):
+        '''
+        Returns whether or not the given word matches this variable's pattern, and sets 
+        its value if there is a match
+        '''
         if word.startswith(self.prefix) and word.endswith(self.postfix):
             value = word[len(self.prefix):len(word) - len(self.postfix)]
             if not self.options or value in self.options:
@@ -46,6 +61,21 @@ class Variable(object):
 
 
 def _create_options(string):
+    '''
+    Takes a syntax string and parses out all matching square brackets, and returns a list 
+    of all combinations of syntaxes that could be formed if the brackets were there or not
+    
+    ARGUMENTS
+        string - the syntax string
+    
+    RETURNS
+        a list of syntax strings that match whether the optional pieces may be present or not
+        
+    EXAMPLES
+        _create_options("cow") -> ["cow"]
+        _create_options("cow [or lamb]") -> ["cow","cow or lamb"]
+        _create_options("cow [or lamb[ada]]") -> ["cow","cow or lamb", "cow or lambada"]
+    '''
     count = 0
     had_counted = False
     i = 0
@@ -75,6 +105,9 @@ def _create_options(string):
 
 
 def _populate_results(grammar):
+    '''
+    Takes a grammar that has been matched, and returns the values of its variables
+    '''
     result = dict()
     for node in grammar:
         if isinstance(node, Variable):
@@ -83,6 +116,10 @@ def _populate_results(grammar):
 
 
 def _create_grammar(grammar_string):
+    '''
+    Creates a grammar construct from a string by tokenizing by whitespace, then creating 
+    Constants and Variables for each token
+    '''
     grammar = []
 
     words = grammar_string.split()
@@ -99,11 +136,18 @@ def _create_grammar(grammar_string):
 
 
 def create_grammars(grammar_string):
+    '''
+    Creates a list of all possible grammar objects from a string that may contain 
+    optional parts
+    '''
     options = _create_options(grammar_string)
     return [_create_grammar(option) for option in options]
 
 
 def _match_grammar(string, grammar):
+    '''
+    Determines if a string is a match for a grammar construct
+    '''
     words = string.split()
 
     last = len(grammar) - 1
@@ -119,6 +163,17 @@ def _match_grammar(string, grammar):
 
 
 def match_grammars(string, grammars):
+    '''
+    Takes a string and an iterable of grammars, and returns True if any of the grammars 
+    are matched by the string
+    
+    ARGUMENTS
+        string - the input string we're matching against
+        grammars - an iterable of grammars to check against
+    
+    RETURNS
+        True if any of the grammars matched, False if not
+    '''
     for grammar in grammars:
         result = _match_grammar(string, grammar)
         if result is not False:
