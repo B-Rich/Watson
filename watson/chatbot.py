@@ -5,6 +5,10 @@ from watson.stateful import State
 from watson.grammar import create_grammars, match_grammars
 
 class Chatbot(object):
+    '''
+    Base chatbot class, must not be instantiated directly. All sublasses must at least override connect and speak
+    for whichever service the subclass supports.
+    '''
 
     default_phrase = 'I... have no idea what you\'re talking about. Try the command "help" for a list of my functions'
     welcome_phrase = "Hello, %s here, how may I assist you?"
@@ -27,6 +31,11 @@ class Chatbot(object):
         self.logger.setLevel(log_level)
     
     def speak(self, message, user):
+        '''
+        the method used to send a message, requires the user that triggered the message, in case the bit needs it
+        
+        to be implemented by subclasses
+        '''
         raise NotImplementedError
 
     def connect(self):
@@ -61,6 +70,10 @@ class Chatbot(object):
         return self._commands.get(name, None)
 
     def perform_action(self, user, message):
+        '''
+        parses out the message. if it's a command, goes through all chat modules and gets them to try to perform an action
+        if they can. if it's not a command, it gets the chat modules to try to overhear it if they can
+        '''
         if not self.username or user != self.username:
             try:
                 message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()

@@ -1,6 +1,13 @@
 
 
 class State(object):
+    '''
+    This class represents the state of a bot. It can be used to register that the bot is 
+    looking for an answer, and then the bot will check back with each subsequent response 
+    to see if that's an answer it's waiting for from that user.
+    
+    TODO: Add retries, and global answers
+    '''
 
     def __init__(self, bot):
         self.bot = bot

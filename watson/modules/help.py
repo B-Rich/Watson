@@ -2,6 +2,14 @@ from watson.modules.chatmodule import ChatModule, command_function
 
 
 class HelpModule(ChatModule):
+    '''
+    This module provides the help information for modules and/or commands. Note that it 
+    ignores overhear functions, as those are never intended to be triggered intentionally.
+    This module can be added to a chatbot at any time and will still provide information 
+    about all chat modules added to that bot, before or after it.
+    
+    When using this chat module, all other modules must have __module_description__ defined.
+    '''
 
     __module_name__ = "help"
     __module_description__ = "Displays help information about modules and commands."

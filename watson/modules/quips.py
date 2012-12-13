@@ -5,6 +5,10 @@ from watson.modules.mathchallenge import protect_with_math
 
 
 class QuipsModule(ChatModule):
+    '''
+    This module contains commands for silly one-liners. Because it has a function that uses protect_with_math,
+    it must be added to the chatbot after the math challenge module.
+    '''
 
     __module_name__ = "quips"
     __module_description__ = "A bunch of one-liners"
