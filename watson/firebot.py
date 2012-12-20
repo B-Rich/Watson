@@ -23,7 +23,10 @@ class Firebot(Chatbot):
             self.logger.error("Must have a room before I can speak!")
             return
 
-        self.room.speak(message)
+        if "\n" in message or "\r" in message:
+            self.room.paste(message)
+        else:
+            self.room.speak(message)
 
     def connect(self):
         self.campfire = Campfire(self.subdomain, self.auth_token)
