@@ -4,6 +4,7 @@ from twisted.application import service
 from twisted.words.protocols.jabber import jid
 from wokkel.client import XMPPClient
 from watson.chatbot import Chatbot
+from twisted.internet import reactor
 import logging
 
 
@@ -61,4 +62,4 @@ class Gbot(Chatbot):
         pass
 
     def disconnect(self):
-        pass
+        reactor.stop()

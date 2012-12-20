@@ -1,4 +1,4 @@
-from watson.gbot import Gbot
+from watson.shellbot import Shellbot
 
 from watson.modules.images import ImageModule
 from watson.modules.quips import QuipsModule
@@ -8,7 +8,7 @@ from watson.modules.articles import ArticleModule
 from watson.modules.adventuregame import AdventureGameModule
 from watson.modules.stop import StopModule
 
-bot = Gbot("Watson",(""),"YOUREMAILHERE@gmail.com","PASSWORD")
+bot = Shellbot("Watson",(""))
 bot.add_module(ImageModule())
 bot.add_module(HelpModule())
 bot.add_module(MathChallengeModule())

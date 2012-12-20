@@ -15,9 +15,9 @@ ROOM_NAME = "ROOMNAME"
 
 bot = Firebot(NAME,COMMAND_NAMES,AUTH_TOKEN,SUBDOMAIN,ROOM_NAME)
 bot.add_module(ImageModule())
-bot.add_module(QuipsModule())
 bot.add_module(HelpModule())
 bot.add_module(MathChallengeModule())
 bot.add_module(ArticleModule())
+bot.add_module(QuipsModule())
 bot.add_module(AdventureGameModule())
 application = bot.connect()

@@ -63,3 +63,4 @@ class Firebot(Chatbot):
         self.logger.info("Disconnect was called. The next error you see is simply Twisted shutting down.")
         self.shutting_down = True
         self.room.leave()
+        reactor.stop()

@@ -78,7 +78,7 @@ class MathChallengeModule(ChatModule):
 
         return problem, answer
 
-    def incorrect_math(self,module,user,*args):
+    def incorrect_math(self,user,*args):
         self.speak(user,"Nope, you've been publically shamed about your algebra skills. I don't have retries implemented yet so you'll have to repeat the last command.")
 
     def correct_math(self,user,*args):
