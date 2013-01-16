@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as README:
 
 setup(
     name='Watson',
-    version='0.1.04',
+    version='0.1.05',
     packages = find_packages(),
     include_package_data = True,
     author = "Babbaco",

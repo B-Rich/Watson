@@ -1,13 +1,15 @@
 from watson.grammar import create_grammars, match_grammars
 import re
 
-def command_function(*syntaxes):
+def command_function(*syntaxes, **options):
     '''
     This function acts as a wrapper for any chat module command function, which registers the function as a command that should
     be run when the command syntax is sent over chat.
     
     ARGUMENTS
         *syntaxes - a series of strings that specify a command syntax (see watson.grammar)
+        **options - a series of options that must be specified by keyword
+            storable - a boolean flag indicating whether this 
     
     RETURNS
         A wrapper function to wrap a chat module function, which registers it as a chat command
@@ -25,6 +27,7 @@ def command_function(*syntaxes):
             raise ValueError("Must provide at least one valid syntax for each command")
         f.command_syntaxes = syntaxes
         f.command_grammars = []
+        f.storable = options.get("storable", True)
         for syntax in syntaxes:
             f.command_grammars += create_grammars(syntax)
         return f
@@ -89,13 +92,15 @@ class ChatModule(object):
         If so, it runs that command function.
         '''
         hit = False
+        storable = None
         for fun in self.command_functions:
             kwargs = match_grammars(command, fun.command_grammars)
             if kwargs is not False:
                 self.bot.logger.info("Grammar Parsed:\n\t\t\t\tcommand: {0}\n\t\t\t\tmodule: {1}\n\t\t\t\targs: {2}".format(command, self.__module_name__ + " - " + fun.__name__, kwargs))
                 fun(self, user, **kwargs)
                 hit = True
-        return hit
+                storable = fun.storable
+        return hit, storable
 
     def overhear(self, user, message):
         '''

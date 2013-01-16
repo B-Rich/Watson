@@ -71,8 +71,8 @@ class Chatbot(object):
 
     def perform_action(self, user, message):
         '''
-        parses out the message. if it's a command, goes through all chat modules and gets them to try to perform an action
-        if they can. if it's not a command, it gets the chat modules to try to overhear it if they can
+        parses out the message. if it's a command, it calls do_command.
+        if it's not a command, it gets the chat modules to try to overhear it if they can
         '''
         self.logger.info(getattr(self,'username',None))
         if not getattr(self,'username',None) or user != self.username:
@@ -80,17 +80,11 @@ class Chatbot(object):
                 message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
                 self.state.check_answer(user, message)
     
-                hit = False
                 parsed = match_grammars(str(message), self.command_grammars)
                 if parsed:
-                    phrase = parsed['phrase'].lower()
-                    for module in self._modules.values():
-                        hit |= module.perform_command(user, phrase)
-                        if hit:
-                            break
-                    if not hit:
-                        self.speak(user, self.default_phrase)
+                    self.do_command(user, parsed['phrase'].lower())
                 else:
+                    hit = False
                     for module in self._modules.values():
                         hit |= module.overhear(user, message)
                         if hit:
@@ -102,3 +96,21 @@ class Chatbot(object):
                     self.speak(user, "Whoops, looks like that caused me to crash. Check my log files to see what happened!")
                 except:
                     self.logger.error(traceback.format_exc())
+
+    def do_command(self, user, command):
+        '''
+        goes through all chat modules and gets them to try to perform an action if they can. if nothing can, it says a predefined phrase
+        '''
+        hit = False
+        storable = True
+        
+        for module in self._modules.values():
+            module_hit, storable = module.perform_command(user, command)
+            hit |= module_hit
+            if hit:
+                if storable:
+                    self.state.store_command(user, command)
+                break
+            
+        if not hit:
+            self.speak(user, self.default_phrase)

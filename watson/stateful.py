@@ -1,5 +1,7 @@
 
 
+COMMAND_HISTORY_LENGTH = 50
+
 class State(object):
     '''
     This class represents the state of a bot. It can be used to register that the bot is 
@@ -12,6 +14,7 @@ class State(object):
     def __init__(self, bot):
         self.bot = bot
         self.answers = dict()
+        self.command_history = [] # list of tuples like (username, command) that keeps track of the last commands
 
     def looking_for_answer(self, user, answer, answer_callback, incorrect_callback=None, args=[]):
         self.answers[user] = (answer, answer_callback, incorrect_callback, args)
@@ -27,3 +30,14 @@ class State(object):
                 answer_callback(*args)
             else:
                 incorrect_callback(*args)
+
+    def store_command(self, user, command):
+        self.command_history.append((user, command))
+        self.command_history = self.command_history[-1 * COMMAND_HISTORY_LENGTH:]
+    
+    def get_last_command(self, user):
+        user_commands = [command for command_user, command in self.command_history if command_user == user]
+        if user_commands:
+            return user_commands[-1]
+        
+        return None
