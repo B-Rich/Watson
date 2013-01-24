@@ -16,20 +16,23 @@ class State(object):
         self.answers = dict()
         self.command_history = [] # list of tuples like (username, command) that keeps track of the last commands
 
-    def looking_for_answer(self, user, answer, answer_callback, incorrect_callback=None, args=[]):
-        self.answers[user] = (answer, answer_callback, incorrect_callback, args)
+    def looking_for_answer(self, user, answer, answer_callback, incorrect_callback=None, args=[], kwargs={}):
+        self.answers[user] = (answer, answer_callback, incorrect_callback, args, kwargs)
 
     def incorrect_answer(self, user, *args):
         pass
 
     def check_answer(self, user, message):
         if user in self.answers:
-            (answer, answer_callback, incorrect_callback, args) = self.answers[user]
+            (answer, answer_callback, incorrect_callback, args, kwargs) = self.answers[user]
             del self.answers[user]
             if str(message).lower() == str(answer).lower():
-                answer_callback(*args)
+                answer_callback(*args, **kwargs)
+                return True
             else:
-                incorrect_callback(*args)
+                incorrect_callback(*args, **kwargs)
+                
+        return False
 
     def store_command(self, user, command):
         self.command_history.append((user, command))

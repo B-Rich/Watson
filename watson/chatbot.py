@@ -78,10 +78,11 @@ class Chatbot(object):
         if not getattr(self,'username',None) or user != self.username:
             try:
                 message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
-                self.state.check_answer(user, message)
+                
+                was_answer = self.state.check_answer(user, message)
     
                 parsed = match_grammars(str(message), self.command_grammars)
-                if parsed:
+                if parsed and not was_answer:
                     self.do_command(user, parsed['phrase'].lower())
                 else:
                     hit = False

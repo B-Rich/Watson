@@ -42,13 +42,13 @@ def protect_with_math(check_if_protected=None):
     '''
     def inner_wrapper(f):
         @wraps(f)
-        def g(*args):
-            if not callable(check_if_protected) or check_if_protected(*args):
+        def g(*args, **kwargs):
+            if not callable(check_if_protected) or check_if_protected(*args, **kwargs):
                 module = args[0]  # all command_functions must have self as their first argument
                 user = args[1]  # all command_functions must have user as their second argument
-                return module.bot.get_module(MathChallengeModule.__module_name__).math_challenge(user, f, args=args)
+                return module.bot.get_module(MathChallengeModule.__module_name__).math_challenge(user, f, args = args, kwargs = kwargs)
             else:
-                return f(*args)
+                return f(*args, **kwargs)
         return g
     return inner_wrapper
 
@@ -78,14 +78,14 @@ class MathChallengeModule(ChatModule):
 
         return problem, answer
 
-    def incorrect_math(self,user,*args):
+    def incorrect_math(self,user,*args,**kwargs):
         self.speak(user,"Nope, you've been publically shamed about your algebra skills. I don't have retries implemented yet so you'll have to repeat the last command.")
 
-    def correct_math(self,user,*args):
+    def correct_math(self,user,*args,**kwargs):
         self.speak(user,"Good job!")
 
     @command_function("mathme")
-    def math_challenge(self, user, answer_callback = None, args = []):
+    def math_challenge(self, user, answer_callback = None, args = [], kwargs = {}):
         '''
         Asks a simple arithmetic problem of the user, then logs that the chatbot should be listening for the correct answer from that user only
         '''
@@ -94,4 +94,4 @@ class MathChallengeModule(ChatModule):
             args = [user]
         problem, answer = self._determine_math_challenge()
         self.speak(user,"Answer me this math problem: " + problem)
-        self.bot.state.looking_for_answer(user, answer, answer_callback, self.incorrect_math, args)
+        self.bot.state.looking_for_answer(user, answer, answer_callback, self.incorrect_math, args, kwargs)
