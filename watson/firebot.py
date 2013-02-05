@@ -27,6 +27,13 @@ class Firebot(Chatbot):
             self.room.paste(message)
         else:
             self.room.speak(message)
+    
+    def sound(self, user, message):
+        if not self.room:
+            self.logger.error("Must have a room before I can make sounds!")
+            return
+
+        self.room.sound(message)
 
     def connect(self):
         self.campfire = Campfire(self.subdomain, self.auth_token)

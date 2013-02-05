@@ -1,5 +1,5 @@
 from watson.modules.chatmodule import ChatModule, command_function, overhear_function
-
+from watson.firebot import Firebot
 
 class CampfireModule(ChatModule):
     '''
@@ -20,12 +20,12 @@ class CampfireModule(ChatModule):
         '''
         Gives a soundtrack to the target user. The target cannot be the user speaking, though!
         '''
+        target = target.lower()
         if target == user:
             self.speak(user, "Sorry, you cannot sexify yourself. Get someone else to do it!")
         
         sexy_users = self._get_sexy_user_list()
         
-        target = target.lower()
         if target not in sexy_users:
             sexy_users.add(target)
             self._set_sexy_user_list(sexy_users)
@@ -39,12 +39,12 @@ class CampfireModule(ChatModule):
         '''
         Removes the sexyback soundtrack from the target. The target cannot be the user speaking, though!
         '''
+        target = target.lower()
         if target == user:
             self.speak(user, "Sorry, you cannot unsexify yourself. Get someone else to do it!")
         
         sexy_users = self._get_sexy_user_list()
         
-        target = target.lower()
         if target in sexy_users:
             sexy_users.remove(target)
             self._set_sexy_user_list(sexy_users)
@@ -54,6 +54,10 @@ class CampfireModule(ChatModule):
 
     @overhear_function(".*")
     def play_soundtrack(self, user):
+        
+        if not issubclass(self.bot.__class__, Firebot):
+            return
+        
         sexy_users = self._get_sexy_user_list()
         if user.lower() in sexy_users:
-            self.speak(user,"/play sexyback")
+            self.bot.sound(user,"sexyback")
