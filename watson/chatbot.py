@@ -74,7 +74,6 @@ class Chatbot(object):
         parses out the message. if it's a command, it calls do_command.
         if it's not a command, it gets the chat modules to try to overhear it if they can
         '''
-        self.logger.info(getattr(self,'username',None))
         if not getattr(self,'username',None) or user != self.username:
             try:
                 message = unicodedata.normalize('NFKD', unicode(message)).encode('ascii', 'ignore').lower()
